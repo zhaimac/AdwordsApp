@@ -1,17 +1,12 @@
-FROM 		ubuntu:latest
-
+FROM zhai/adw_env
 LABEL maintainer="zhai@uchicago.edu"
-
-RUN			apt-get update -y &&\
-			apt-get install -y python3 python3-pip
-
 
 COPY 		. /app
 WORKDIR 	/app
-RUN 		pip3 install -r requirements_docker.txt
 
-RUN [ "python3", "-c", "import nltk; nltk.download('punkt')" ]
-RUN [ "python3", "-c", "import nltk; nltk.download('wordnet')" ]
+#ENV FLASK_APP = app.py
+#ENV FLASK_ENV = production
+#ENV FLASK_DEBUG = 0
 
-ENTRYPOINT 	["python3"]
+ENTRYPOINT 	["python"]
 CMD 		["app.py"]
