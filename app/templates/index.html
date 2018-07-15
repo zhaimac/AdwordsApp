@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <section class="jumbotron text-center mb-0"
+             style="background: url({{ url_for('static', filename='images/bg3.jpg') }}) center no-repeat;">
+      <div class="container">
+        <h2>Create AdWords by AI</h2>
+        <form action="" method="post" >
+          {{ form.hidden_tag() }}
+          <p>
+            {{ form.product.label }}<br>
+            {{ form.product}}
+          </p>
+          <p>
+            {{ form.landing_page.label }}<br>
+            {{ form.landing_page(size=100) }}
+          </p>
+          <p>{{ form.submit() }}</p>
+        </form>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="col-md-12 px-10">
+        <h5 class="font-italic text-center">{{result_title}}</h5>
+        <p class="lead my-3">{{hot_gram}}</p>
+      </div>
+      <div class="col-md-12 px-10">
+        {{landing_content}}
+      </div>
+    </div>
+
+{% endblock %}

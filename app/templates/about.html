@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="container">
+    <br><h2 class="text-center">TEAM</h2><br>
+
+    <div class="row px-10">
+      <div class="col-lg-4">
+        <img class="rounded-circle"
+             src="{{ url_for('static', filename='images/mo1.jpg') }}" width="120" height="120">
+        <h2>Mo Zhai</h2>
+        <p>Having solid data analysis knowledge and years of professional practice,
+            He has an enthusiastic heart for data science and IT industries.</p>
+        <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/mozhai/" target="_blank" role="button">View details »</a></p>
+      </div>
+
+      <div class="col-lg-4">
+        <img class="rounded-circle"
+             src="{{ url_for('static', filename='images/xun.jpg') }}" width="120" height="120">
+        <h2>Xun Pei</h2>
+        <p>Senior researcher works for University of Chicago. She has an enthusiastic heart for data science and research.</p>
+        <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/xunpei/" target="_blank" role="button">View details »</a></p>
+      </div>
+
+      <div class="col-lg-4">
+        <img class="rounded-circle"
+             src="{{ url_for('static', filename='images/yanxuan.jpg') }}" width="120" height="120">
+        <h2>Yanxuan Wang</h2>
+        <p>Machine learning data science with solid statistics background Vestibulum id ligula porta felis euismod semper. Fusce dapibus.</p>
+        <p><a class="btn btn-secondary" href="https://www.linkedin.com/in/chris-yanxuan-wang-946732109/" target="_blank" role="button">View details »</a></p>
+      </div>
+    </div>
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5">
+        <img class="featurette-image img-fluid mx-auto"
+             alt="500x500" style="width: 500px; height: 500px;"
+             src="{{ url_for('static', filename='images/f1.jpg') }}">
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7 order-md-2">
+        <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5 order-md-1">
+        <img class="featurette-image img-fluid mx-auto"
+             alt="500x500" style="width: 500px; height: 500px;"
+             src="{{ url_for('static', filename='images/f2.jpg') }}">
+      </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+      <div class="col-md-7">
+        <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
+        <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+      </div>
+      <div class="col-md-5">
+        <img class="featurette-image img-fluid mx-auto"
+             alt="500x500" style="width: 500px; height: 500px;"
+             src="{{ url_for('static', filename='images/f3.jpg') }}">
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
