@@ -15,7 +15,7 @@ def index():
         landing_page_url = form.landing_page.data
         print(product, landing_page_url)
 
-        raw = fetchLandingPage.landing_page_raw_text(landing_page_url)
+        raw = fetchLandingPage.url_to_raw_content(landing_page_url)
         hot_gram = Adwords.gen_add_def(landing_page_url)
 
         return render_template('index.html', title='AdWords',

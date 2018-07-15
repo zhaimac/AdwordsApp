@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from Adwords import cleandata
 from Adwords import similarity
+from Adwords import fetchLandingPage
 from Adwords import nlp_feature
 
 
@@ -39,7 +40,7 @@ df = cleandata.clean_data_1(df0)
 
 
 def gen_add_def(landing_pag_url):
-    landing_page_url_raw_text = similarity.url_to_raw_content(landing_pag_url)
+    landing_page_url_raw_text = fetchLandingPage.url_to_raw_content(landing_pag_url)
     df_for_page = similarity.related_sub_df(df, landing_page_url_raw_text)
     ad_text_df = nlp_feature.add_label(df_for_page)
 
