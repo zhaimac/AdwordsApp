@@ -88,7 +88,7 @@ def recommend_modeling(input_df):
                             if len(get_term_beta(x[1], feature_names_coefficients)) > 0
                             and get_term_beta(x[1], feature_names_coefficients)[0] < 0]
 
-    return post_important_terms[:16], neg_important_terms[:16]
+    return post_important_terms[:26], neg_important_terms[:26]
 
 
 def recommend(landing_page_url_raw_text):
