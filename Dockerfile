@@ -10,3 +10,5 @@ WORKDIR 	/app
 
 ENTRYPOINT 	["python"]
 CMD 		["app.py"]
+
+#export DOCKER_HOST=tcp://localhost:2375

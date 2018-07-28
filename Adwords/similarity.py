@@ -1,13 +1,8 @@
 import nltk
 import numpy as np
-import urllib
-from bs4 import BeautifulSoup
-import re
 
 #nltk.download('punkt')
 #nltk.download('wordnet')
-#
-
 
 
 def text_to_dict(raw):
@@ -32,13 +27,13 @@ def text_to_dict(raw):
 
 
 def cos_sim(a, b):
-    dot_priduct = np.dot(a, b)
+    dot_product = np.dot(a, b)
     norm_a = np.linalg.norm(a)
     norm_b = np.linalg.norm(b)
-    return dot_priduct / (norm_a * norm_b)
+    return dot_product / (norm_a * norm_b)
 
 
-def getSimilarity(dict1, dict2):
+def get_similarity(dict1, dict2):
     all_words_list = []
     for key in dict1:
         all_words_list.append(key)
@@ -54,7 +49,6 @@ def getSimilarity(dict1, dict2):
         v1[i] = dict1.get(key, 0)
         v2[i] = dict2.get(key, 0)
         i = i + 1
-
     return cos_sim(v1, v2)
 
 
@@ -62,7 +56,7 @@ def getSimilarity(dict1, dict2):
 # The next step will take some time
 def related_sub_df(df, landing_page_url_raw_text):
     landing_pag_url_raw_text_dict = text_to_dict(landing_page_url_raw_text)
-    df['Similarity'] = df.add_define_text.apply(lambda x:getSimilarity(landing_pag_url_raw_text_dict, text_to_dict(x)))
+    df['Similar'] = df.Description.apply(lambda x: get_similarity(landing_pag_url_raw_text_dict, text_to_dict(x)))
 
-    df_for_page = df[df.Similarity > df.Similarity.quantile(.8)]
+    df_for_page = df[df.Similar > df.Similar.quantile(.8)]
     return df_for_page

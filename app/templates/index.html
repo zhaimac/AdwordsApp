@@ -21,14 +21,28 @@
       </div>
     </section>
 
-    <div class="container">
-      <div class="col-md-12 px-10">
-        <h5 class="font-italic text-center">{{result_title}}</h5>
-        <p class="lead my-3">{{hot_gram}}</p>
+    {% if error %}
+      <div class="container">
+        <div class="col-md-12 px-10">
+          <h5 class="font-italic text-center">Opps..</h5>
+          <p class="lead my-3 text-center">{{ error }}</p>
+        </div>
       </div>
-      <div class="col-md-12 px-10">
-        {{landing_content}}
-      </div>
-    </div>
+    {% endif %}
 
+    {% if landing_content %}
+      <div class="container">
+        <div class="col-md-12 px-10">
+          <h5 class="font-italic text-center">Based on Landing Page Content</h5>
+          <p class="lead my-3">{{landing_content}}</p>
+        </div>
+        <div class="col-md-12 px-10">
+          <h5 class="font-italic text-center">We Recommend These Phrases in AD Define</h5>
+          <p class="lead my-3">{{post}}</p>
+
+          <h5 class="font-italic text-center">We NOT Recommend These Phrases in AD Define</h5>
+          <p class="lead my-3">{{neg}}</p>
+        </div>
+      </div>
+    {% endif %}
 {% endblock %}

@@ -2,7 +2,8 @@ import urllib
 import re
 from bs4 import BeautifulSoup
 
-def url_to_raw_content(page_url):
+
+def url_to_content(page_url):
     page = urllib.request.urlopen(page_url)
     soup = BeautifulSoup(page.read(), "lxml")
 
