@@ -3,7 +3,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
-from Adwords import cleandata
+from Adwords.dataclean import cleandata
 from Adwords import similarity
 from Adwords import fetchLandingPage
 
@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 
 # pre_reload cleaned_data
-cleaned_data_df = pd.read_csv('./app/cleaned_data_v7.csv')
+cleaned_data_df = pd.read_csv('./app/data_cleaned_v7_3col.csv')
 
 
 def feature_tf_idf(input_df, gram_range=(1, 5)):
