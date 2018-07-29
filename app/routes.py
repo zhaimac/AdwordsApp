@@ -44,7 +44,7 @@ def recommend():
         landing_page_raw_text = Adwords.fetchLandingPage.url_to_content(url)
     except Exception as e:
         error = dict(
-            message="landing_page_url is void or protected",
+            message="Landing page url is void or protected.",
         )
         response = app.response_class(
             response=json.dumps(error),
