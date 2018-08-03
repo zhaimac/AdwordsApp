@@ -11,9 +11,8 @@ from flask import render_template, redirect, flash, url_for, request, jsonify
 def index():
     form = AdForm()
     if form.validate_on_submit():  # post and submit validate
-        product = form.product.data
+        #product = form.product.data
         url = form.landing_page.data
-        print(product, url)
 
         try:
             landing_page_raw_text = Adwords.fetchLandingPage.url_to_content(url)
@@ -22,19 +21,19 @@ def index():
                                    form=form,
                                    error="Landing page is void or protected!")
 
-        p, n = Adwords.recommend(landing_page_raw_text)
+        frq_goods, p, n = Adwords.recommend(landing_page_raw_text)
 
-        if len(landing_page_raw_text) > 800:
+        if len(landing_page_raw_text) > 1200:
             landing_page_raw_text = landing_page_raw_text[:48] + \
-                                    ' ... ' + landing_page_raw_text[200:800] + '...'
+                                    ' ... ' + landing_page_raw_text[200:1200] + '......'
 
         return render_template('index.html', title='AdWords',
                                form=form,
                                landing_content=landing_page_raw_text,
-                               post=p, neg=n)
+                               frq_goods=frq_goods, post=p, neg=n)
 
     # for get or submit not validate
-    return render_template('index.html', title='AdWords', form=form)  # GET or submit validate Field
+    return render_template('index.html', title='Google Ads Adviser', form=form)  # GET or submit validate Field
 
 
 @app.route('/api/r', methods=['GET'])
@@ -53,13 +52,14 @@ def recommend():
         )
         return response
 
-    p, n = Adwords.recommend(landing_page_raw_text)
+    frq_goods, p, n = Adwords.recommend(landing_page_raw_text)
     if len(landing_page_raw_text) > 800:
         landing_page_raw_text = landing_page_raw_text[:48] + \
                                 ' ... ' + landing_page_raw_text[200:800] + '...'
     data = dict(
         landing_url=url,
         text=landing_page_raw_text,
+        frq_goods=frq_goods,
         post=p,
         neg=n,
     )

@@ -5,12 +5,12 @@
     <section class="jumbotron text-center mb-0"
              style="background: url({{ url_for('static', filename='images/bg3.jpg') }}) center no-repeat;">
       <div class="container">
-        <h2>Google Ads Recommend by AI</h2>
+        <h2>Google Ads Adviser</h2>
         <form action="" method="post" >
           {{ form.hidden_tag() }}
           <p>
-            {{ form.product.label }}<br>
-            {{ form.product}}
+{#            {{ form.product.label }}<br>#}
+{#            {{ form.product}}#}
           </p>
           <p>
             {{ form.landing_page.label }}<br>
@@ -33,14 +33,16 @@
     {% if landing_content %}
       <div class="container">
         <div class="col-md-12 px-10">
-          <h5 class="font-italic text-center">Based on Landing Page Content</h5>
+          <h5 class="font-italic text-center">Landing Page Content</h5>
           <p class="lead my-3">{{landing_content}}</p>
-        </div>
-        <div class="col-md-12 px-10">
-          <h5 class="font-italic text-center">We Recommend These Phrases in AD Define</h5>
+
+          <h5 class="font-italic text-center">We Recommend Good and Related Phrases </h5>
+          <p class="lead my-3">{{frq_goods}}</p>
+
+          <h5 class="font-italic text-center">We Recommend These Phrases according to ML</h5>
           <p class="lead my-3">{{post}}</p>
 
-          <h5 class="font-italic text-center">We NOT Recommend These Phrases in AD Define</h5>
+          <h5 class="font-italic text-center">We NOT Recommend These Phrases according to ML</h5>
           <p class="lead my-3">{{neg}}</p>
         </div>
       </div>
