@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.metrics import confusion_matrix, accuracy_score
+import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
@@ -102,6 +103,7 @@ def recommend_post_neg_conf(input_df, col):
 
     conf_mat = confusion_matrix(labels_test, y_prd)
     accuracy = accuracy_score(labels_test, y_prd)
+    f1_score = sklearn.metrics.f1_score(labels_test, y_prd, average='micro')
 
     # Link back svc coefficients to feature name
     feature_names_coefficients = get_feature_names_coefficients(svc.coef_, feature_names)
@@ -116,7 +118,7 @@ def recommend_post_neg_conf(input_df, col):
     random_forest_clf.fit(features_train, labels_train)
     feature_importance = dict(zip(feature_names, random_forest_clf.feature_importances_))
 
-    return post_dict, neg_dict, feature_importance, conf_mat, accuracy
+    return post_dict, neg_dict, feature_importance, conf_mat, accuracy, f1_score
 
 
 def ranked_frq_words(df, col):
@@ -129,7 +131,7 @@ def sigmoid(x):
     return x/(1 + abs(x))
 
 
-def recommend_by_col(landing_page_raw_text, col, top=24):
+def recommend_by_col(landing_page_raw_text, col):
     good_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Good'],
                                         landing_page_raw_text, col, 0.75)
     bad_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Bad'],
@@ -139,24 +141,46 @@ def recommend_by_col(landing_page_raw_text, col, top=24):
     # get all dicts
     ranked_frq_terms_in_good = ranked_frq_words(good_df, col)
     ranked_frq_terms_in_bad = ranked_frq_words(bad_df, col)
-    post_terms, neg_terms, importance, conf_mat, accuracy = recommend_post_neg_conf(all_df, col)
+    post_terms, neg_terms, importance, conf_mat, accuracy, f1_score = recommend_post_neg_conf(all_df, col)
 
-    good = pd.DataFrame({'rank': pd.Series(ranked_frq_terms_in_good),
-                         'conf': pd.Series(post_terms),
-                         'imp': pd.Series(importance)}).dropna()
-    bad = pd.DataFrame({'rank': pd.Series(ranked_frq_terms_in_bad),
-                        'conf': pd.Series(neg_terms),
-                        'imp': pd.Series(importance)}).dropna()
+    # ['', 'Adjacency', 'Polarity', 'Importance', 'Composite Score']
 
-    good['score'] = sigmoid(good['rank'] * good['rank'] * good['conf'] * good['imp'] * 100)
-    bad['score'] = sigmoid(bad['rank'] * bad['rank'] * bad['conf'] * bad['imp'] * 100)
+    good = pd.DataFrame({'Adjacency': pd.Series(ranked_frq_terms_in_good),
+                         'Polarity': pd.Series(post_terms),
+                         'Importance': pd.Series(importance)}).dropna()
+    bad = pd.DataFrame({'Adjacency': pd.Series(ranked_frq_terms_in_bad),
+                        'Polarity': pd.Series(neg_terms),
+                        'Importance': pd.Series(importance)}).dropna()
+
+    good['Composite Score'] = sigmoid(good['Adjacency'] * good['Adjacency'] * good['Polarity'] * good['Importance'])
+    bad['Composite Score'] = sigmoid(bad['Adjacency'] * bad['Adjacency'] * bad['Polarity'] * bad['Importance'])
+    #good.to_csv('./results/good_' + col + '.csv')
+    #bad.to_csv('./results/bad_' + col + '.csv')
+
+    return good, bad, conf_mat, accuracy, f1_score
+
+
+def recommend_by_col_app(landing_page_raw_text, col, top=48):
+    good, bad, conf_mat, accuracy, f1_score = recommend_by_col(landing_page_raw_text, col)
+
+    good = good[good['Composite Score'] > 0]
+    good.reset_index(level=0, inplace=True)
+    good_sorted = good.sort_values(by=['Composite Score'], ascending=False)
+
+    bad = bad[bad['Composite Score'] < 0]
+    bad.reset_index(level=0, inplace=True)
+    bad_sorted = bad.sort_values(by=['Composite Score'], ascending=True)
+
+    return good_sorted[:top], bad_sorted[:top], conf_mat.tolist(), accuracy, f1_score
+
+
+def recommend_by_col_api(landing_page_raw_text, col, top=48):
+    good, bad, conf_mat, accuracy, f1_score = recommend_by_col(landing_page_raw_text, col)
 
     good_dict = good.to_dict('index')
     bad_dict = bad.to_dict('index')
-    good.to_csv('./results/good_' + col + '.csv')
-    bad.to_csv('./results/bad_' + col + '.csv')
 
-    good_tops = sorted(good_dict.items(), key=lambda x: x[1]['score'], reverse=True)[:top]
-    bad_tops = sorted(bad_dict.items(), key=lambda x: x[1]['score'])[:top]
+    good_tops = sorted(good_dict.items(), key=lambda x: x[1]['Composite Score'], reverse=True)[:top]
+    bad_tops = sorted(bad_dict.items(), key=lambda x: x[1]['Composite Score'])[:top]
 
-    return good_tops, bad_tops, conf_mat.tolist(), accuracy
+    return good_tops, bad_tops, conf_mat.tolist(), accuracy, f1_score
