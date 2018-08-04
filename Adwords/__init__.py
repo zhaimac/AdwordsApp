@@ -153,8 +153,8 @@ def recommend_by_col(landing_page_raw_text, col, top=24):
 
     good_dict = good.to_dict('index')
     bad_dict = bad.to_dict('index')
-    #good.to_csv('./results/good_' + col + '.csv')
-    #bad.to_csv('./results/bad_' + col + '.csv')
+    good.to_csv('./results/good_' + col + '.csv')
+    bad.to_csv('./results/bad_' + col + '.csv')
 
     good_tops = sorted(good_dict.items(), key=lambda x: x[1]['score'], reverse=True)[:top]
     bad_tops = sorted(bad_dict.items(), key=lambda x: x[1]['score'])[:top]
