@@ -20,7 +20,8 @@ def index():
             return render_template('index.html', title='AdWords',
                                    form=form,
                                    error="Landing page is void or protected!")
-        p, n = Adwords.recommend(landing_page_raw_text)
+        post_headline, neg_headline, conf_mat_h, accuracy_h = Adwords.recommend_by_col(landing_page_raw_text, 'Headline')
+        post_description, neg_description, conf_mat_d, accuracy_d = Adwords.recommend_by_col(landing_page_raw_text, 'Description')
 
         if len(landing_page_raw_text) > 1200:
             landing_page_raw_text = landing_page_raw_text[:48] + \
@@ -28,7 +29,10 @@ def index():
         return render_template('index.html', title='AdWords',
                                form=form,
                                landing_content=landing_page_raw_text,
-                               post=p, neg=n)
+                               post_headline=post_headline, neg_headline=neg_headline,
+                               conf_mat_h=conf_mat_h, accuracy_h=accuracy_h,
+                               post_description= post_description, neg_description=post_description,
+                               conf_mat_d=conf_mat_d, accuracy_d=accuracy_d)
     # for get or submit not validate
     return render_template('index.html', title='Google Ads Adviser', form=form)  # GET or submit validate Field
 
@@ -49,16 +53,19 @@ def recommend():
         )
         return response
 
-    frq_goods, p, n = Adwords.recommend(landing_page_raw_text)
+    post_headline, neg_headline, conf_mat_h, accuracy_h = Adwords.recommend_by_col(landing_page_raw_text, 'Headline')
+    post_description, neg_description, conf_mat_d, accuracy_d = Adwords.recommend_by_col(landing_page_raw_text, 'Description')
     if len(landing_page_raw_text) > 800:
         landing_page_raw_text = landing_page_raw_text[:48] + \
                                 ' ... ' + landing_page_raw_text[200:800] + '...'
     data = dict(
         landing_url=url,
         text=landing_page_raw_text,
-        frq_goods=frq_goods,
-        post=p,
-        neg=n,
+        landing_content=landing_page_raw_text,
+        post_headline=post_headline, neg_headline=neg_headline,
+        conf_mat_h=conf_mat_h, accuracy_h=accuracy_h,
+        post_description=post_description, neg_description=post_description,
+        conf_mat_d=conf_mat_d, accuracy_d=accuracy_d
     )
 
     response = app.response_class(

@@ -53,15 +53,15 @@ def get_similarity(dict1, dict2):
 
 
 # Get the Similarity between landing_pag_url_raw_text and each row
-def add_similarity_feature(df, landing_page_url_raw_text):
+def add_similarity_feature(df, landing_page_url_raw_text, col):
     landing_pag_url_raw_text_dict = text_to_dict(landing_page_url_raw_text)
-    df['Similarity'] = df.Description.apply(lambda x: get_similarity(landing_pag_url_raw_text_dict, text_to_dict(x)))
+    df['Similarity'] = df[col].apply(lambda x: get_similarity(landing_pag_url_raw_text_dict, text_to_dict(x)))
     return df
 
 
 # Get the Similarity between landing_pag_url_raw_text and each row
 # only keep top_similarity
-def related_sub_df(df, landing_page_url_raw_text, top_similarity=0.8):
-    df_with_sim = add_similarity_feature(df, landing_page_url_raw_text)
+def related_sub_df(df, landing_page_url_raw_text, col, top_similarity=0.8):
+    df_with_sim = add_similarity_feature(df, landing_page_url_raw_text, col)
     df_for_page = df_with_sim[df_with_sim.Similarity > df_with_sim.Similarity.quantile(top_similarity)]
     return df_for_page
