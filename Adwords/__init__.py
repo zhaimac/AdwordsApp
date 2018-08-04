@@ -14,7 +14,7 @@ from sklearn.svm import LinearSVC
 cleaned_data_df = pd.read_csv('./app/data_cleaned_v8.csv')
 
 
-def feature_tf_idf(input_df, gram_range=(2, 5)):
+def feature_tf_idf(input_df, gram_range=(1, 5)):
     tf_idf = TfidfVectorizer(sublinear_tf=True,
                             min_df=5, norm='l2',
                             encoding='latin-1',
@@ -129,7 +129,7 @@ def ranked_frq_words(df):
     return sorted(ranks.items(), key=lambda x: x[1], reverse=True)
 
 
-def recommend(landing_page_raw_text, top=48):
+def recommend(landing_page_raw_text, top=24):
     good_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Good'],
                                         landing_page_raw_text, 0.75)
     bad_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Bad'],
@@ -146,10 +146,13 @@ def recommend(landing_page_raw_text, top=48):
     bad = pd.DataFrame({'rank': pd.Series(ranked_frq_terms_in_bad), 'conf': pd.Series(neg_terms)}).dropna()
     bad['score'] = bad['rank'] * bad['conf']
 
-    good_dict = good.to_dict('dict')
-    bad_dict = bad.to_dict('dict')
+    good_dict = good.to_dict('index')
+    bad_dict = bad.to_dict('index')
 
-    good.to_csv('./good.csv')
-    bad.to_csv('./bad.csv')
+    #good.to_csv('./good.csv')
 
-    return good_dict, bad_dict
+    goodtop = sorted(good_dict.items(), key=lambda x: x[1]['score'], reverse=True)[:top]
+    badtop = sorted(bad_dict.items(), key=lambda x: x[1]['score'])[:top]
+
+
+    return goodtop, badtop
