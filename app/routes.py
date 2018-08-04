@@ -20,18 +20,15 @@ def index():
             return render_template('index.html', title='AdWords',
                                    form=form,
                                    error="Landing page is void or protected!")
-
-        frq_goods, p, n = Adwords.recommend(landing_page_raw_text)
+        p, n = Adwords.recommend(landing_page_raw_text)
 
         if len(landing_page_raw_text) > 1200:
             landing_page_raw_text = landing_page_raw_text[:48] + \
                                     ' ... ' + landing_page_raw_text[200:1200] + '......'
-
         return render_template('index.html', title='AdWords',
                                form=form,
                                landing_content=landing_page_raw_text,
-                               frq_goods=frq_goods, post=p, neg=n)
-
+                               post=p, neg=n)
     # for get or submit not validate
     return render_template('index.html', title='Google Ads Adviser', form=form)  # GET or submit validate Field
 

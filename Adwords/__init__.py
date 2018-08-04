@@ -14,7 +14,7 @@ from sklearn.svm import LinearSVC
 cleaned_data_df = pd.read_csv('./app/data_cleaned_v8.csv')
 
 
-def feature_tf_idf(input_df, gram_range=(1, 5)):
+def feature_tf_idf(input_df, gram_range=(2, 5)):
     tf_idf = TfidfVectorizer(sublinear_tf=True,
                             min_df=5, norm='l2',
                             encoding='latin-1',
@@ -90,7 +90,7 @@ def recommend_post_neg_feature_importance(input_df):
 def recommend_post_neg_conf(input_df):
     # prepare for tf_idf feature with n gram_range
     label = input_df.label
-    feature, feature_names = feature_tf_idf(input_df, gram_range=(1, 5))
+    feature, feature_names = feature_tf_idf(input_df)
 
     features_train, features_test, labels_train, labels_test = \
         train_test_split(feature, label, test_size=0.2, random_state=42)
@@ -110,23 +110,46 @@ def recommend_post_neg_conf(input_df):
     post = feature_names_coefficients[feature_names_coefficients.coef > 0]
     neg = feature_names_coefficients[feature_names_coefficients.coef < 0]
 
-    post = sorted(zip(map(lambda x: round(x, 4), post.coef), post.names), reverse=True)
-    neg = sorted(zip(map(lambda x: round(x, 4), neg.coef), neg.names))
-    return post, neg
+    post_dict = dict(zip(post.names, post.coef))
+    neg_dict = dict(zip(neg.names, neg.coef))
+
+    return post_dict, neg_dict
+
+    return (sorted(post_dict.items(), key=lambda x: x[1], reverse=True),
+            sorted(neg_dict.items(), key=lambda x: x[1], reverse=True))
 
 
 def ranked_frq_words(df):
-    feature, feature_names = feature_tf_idf(df, gram_range=(1, 5))
+    feature, feature_names = feature_tf_idf(df)
     feature_tfidf_sum = feature.sum(axis=0).tolist()[0]
-
     ranks = dict(zip(feature_names, feature_tfidf_sum))
+
+    return ranks
+
     return sorted(ranks.items(), key=lambda x: x[1], reverse=True)
 
 
-def recommend(landing_page_url_raw_text, top=48):
-    df_for_page = similarity.related_sub_df(cleaned_data_df, landing_page_url_raw_text, 0.75)
+def recommend(landing_page_raw_text, top=48):
+    good_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Good'],
+                                        landing_page_raw_text, 0.75)
+    bad_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Bad'],
+                                       landing_page_raw_text, 0.75)
+    all_df = good_df.append(bad_df)
 
-    ranked_frq_terms_in_good = ranked_frq_words(df_for_page[df_for_page.label == 'Good'])
-    post_terms, neg_terms = recommend_post_neg_conf(df_for_page)
+    #get all dicts
+    ranked_frq_terms_in_good = ranked_frq_words(good_df)
+    ranked_frq_terms_in_bad = ranked_frq_words(bad_df)
+    post_terms, neg_terms = recommend_post_neg_conf(all_df)
 
-    return ranked_frq_terms_in_good[:top], post_terms[:top], neg_terms[:top]
+    good = pd.DataFrame({'rank': pd.Series(ranked_frq_terms_in_good), 'conf': pd.Series(post_terms)}).dropna()
+    good['score'] = good['rank'] * good['conf']
+    bad = pd.DataFrame({'rank': pd.Series(ranked_frq_terms_in_bad), 'conf': pd.Series(neg_terms)}).dropna()
+    bad['score'] = bad['rank'] * bad['conf']
+
+    good_dict = good.to_dict('dict')
+    bad_dict = bad.to_dict('dict')
+
+    good.to_csv('./good.csv')
+    bad.to_csv('./bad.csv')
+
+    return good_dict, bad_dict
