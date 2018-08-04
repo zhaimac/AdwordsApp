@@ -55,17 +55,21 @@ def recommend():
 
     post_headline, neg_headline, conf_mat_h, accuracy_h = Adwords.recommend_by_col(landing_page_raw_text, 'Headline')
     post_description, neg_description, conf_mat_d, accuracy_d = Adwords.recommend_by_col(landing_page_raw_text, 'Description')
-    if len(landing_page_raw_text) > 800:
+    if len(landing_page_raw_text) > 1200:
         landing_page_raw_text = landing_page_raw_text[:48] + \
-                                ' ... ' + landing_page_raw_text[200:800] + '...'
+                                ' ... ' + landing_page_raw_text[200:1200] + '...'
     data = dict(
         landing_url=url,
         text=landing_page_raw_text,
         landing_content=landing_page_raw_text,
-        post_headline=post_headline, neg_headline=neg_headline,
-        conf_mat_h=conf_mat_h, accuracy_h=accuracy_h,
-        post_description=post_description, neg_description=post_description,
-        conf_mat_d=conf_mat_d, accuracy_d=accuracy_d
+        post_headline=post_headline,
+        neg_headline=neg_headline,
+        conf_mat_h=conf_mat_h,
+        accuracy_h=accuracy_h,
+        post_description=post_description,
+        neg_description=post_description,
+        conf_mat_d=conf_mat_d,
+        accuracy_d=accuracy_d
     )
 
     response = app.response_class(

@@ -3,15 +3,13 @@
 {% block content %}
 
     <section class="jumbotron text-center mb-0"
-             style="background: url({{ url_for('static', filename='images/bg3.jpg') }}) center no-repeat;">
+             style="background: url({{ url_for('static', filename='images/bg2.jpg') }}) center no-repeat;">
       <div class="container">
-        <h2>Google Ads Advisor</h2>
+        <h2>Google Ad. ML Advisory</h2>
         <form action="" method="post" >
           {{ form.hidden_tag() }}
-          <p>
 {#            {{ form.product.label }}<br>#}
 {#            {{ form.product}}#}
-          </p>
           <p>
             {{ form.landing_page.label }}<br>
             {{ form.landing_page(size=100) }}
@@ -38,18 +36,18 @@
 
           <h4 class="font-italic text-center">Headline</h4>
             {{conf_mat_h}} {{accuracy_h}}
-          <h5 class="font-italic text-center">ML Recommend These Headline Phrases</h5>
+          <h5 class="font-italic text-center">ML Algorithms Recommend These Headline Phrases</h5>
           <p class="lead my-3">{{post_headline}}</p>
 
-          <h5 class="font-italic text-center">ML NOT Recommend These Headline Phrases</h5>
+          <h5 class="font-italic text-center">ML Algorithms NOT Recommend These Headline Phrases</h5>
           <p class="lead my-3">{{neg_headline}}</p>
 
           <h4 class="font-italic text-center">Description</h4>
             {{conf_mat_d}} {{accuracy_d}}
-          <h5 class="font-italic text-center">ML Recommend These Description Phrases</h5>
+          <h5 class="font-italic text-center">ML Algorithms Recommend These Description Phrases</h5>
           <p class="lead my-3">{{post_description}}</p>
 
-          <h5 class="font-italic text-center">ML NOT Recommend These Description Phrases</h5>
+          <h5 class="font-italic text-center">ML Algorithms NOT Recommend These Description Phrases</h5>
           <p class="lead my-3">{{neg_description}}</p>
         </div>
       </div>

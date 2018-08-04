@@ -102,7 +102,6 @@ def recommend_post_neg_conf(input_df, col):
 
     conf_mat = confusion_matrix(labels_test, y_prd)
     accuracy = accuracy_score(labels_test, y_prd)
-    print(conf_mat)
 
     # Link back svc coefficients to feature name
     feature_names_coefficients = get_feature_names_coefficients(svc.coef_, feature_names)
@@ -113,7 +112,7 @@ def recommend_post_neg_conf(input_df, col):
     neg_dict = dict(zip(neg.names, neg.coef))
 
     # random_forest_clf to get feature_importance
-    random_forest_clf = RandomForestClassifier()
+    random_forest_clf = RandomForestClassifier(max_features=4)
     random_forest_clf.fit(features_train, labels_train)
     feature_importance = dict(zip(feature_names, random_forest_clf.feature_importances_))
 
@@ -124,6 +123,10 @@ def ranked_frq_words(df, col):
     feature, feature_names = col_to_tf_idf_ngram(df, col)
     feature_tf_idf_sum = feature.sum(axis=0).tolist()[0]
     return dict(zip(feature_names, feature_tf_idf_sum))
+
+
+def sigmoid(x):
+    return x/(1 + abs(x))
 
 
 def recommend_by_col(landing_page_raw_text, col, top=24):
@@ -145,8 +148,8 @@ def recommend_by_col(landing_page_raw_text, col, top=24):
                         'conf': pd.Series(neg_terms),
                         'imp': pd.Series(importance)}).dropna()
 
-    good['score'] = good['rank'] * good['conf']
-    bad['score'] = bad['rank'] * bad['conf']
+    good['score'] = sigmoid(good['rank'] * good['rank'] * good['conf'] * good['imp'] * 100)
+    bad['score'] = sigmoid(bad['rank'] * bad['rank'] * bad['conf'] * bad['imp'] * 100)
 
     good_dict = good.to_dict('index')
     bad_dict = bad.to_dict('index')
@@ -156,4 +159,4 @@ def recommend_by_col(landing_page_raw_text, col, top=24):
     good_tops = sorted(good_dict.items(), key=lambda x: x[1]['score'], reverse=True)[:top]
     bad_tops = sorted(bad_dict.items(), key=lambda x: x[1]['score'])[:top]
 
-    return good_tops, bad_tops, conf_mat, accuracy
+    return good_tops, bad_tops, conf_mat.tolist(), accuracy
