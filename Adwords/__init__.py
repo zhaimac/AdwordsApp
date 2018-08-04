@@ -154,8 +154,7 @@ def recommend_by_col(landing_page_raw_text, col):
 
     good['Composite Score'] = sigmoid(good['Adjacency'] * good['Adjacency'] * good['Polarity'] * good['Importance'])
     bad['Composite Score'] = sigmoid(bad['Adjacency'] * bad['Adjacency'] * bad['Polarity'] * bad['Importance'])
-    #good.to_csv('./results/good_' + col + '.csv')
-    #bad.to_csv('./results/bad_' + col + '.csv')
+
 
     return good, bad, conf_mat, accuracy, f1_score
 
@@ -170,6 +169,9 @@ def recommend_by_col_app(landing_page_raw_text, col, top=48):
     bad = bad[bad['Composite Score'] < 0]
     bad.reset_index(level=0, inplace=True)
     bad_sorted = bad.sort_values(by=['Composite Score'], ascending=True)
+
+    # good_sorted.to_csv('./results/good_' + col + '.csv')
+    # bad_sorted.to_csv('./results/bad_' + col + '.csv')
 
     return good_sorted[:top], bad_sorted[:top], conf_mat.tolist(), accuracy, f1_score
 
