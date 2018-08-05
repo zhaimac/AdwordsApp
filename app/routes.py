@@ -20,8 +20,8 @@ def index():
             return render_template('index.html', title='AdWords',
                                    form=form,
                                    error="Landing page is void or protected!")
-        post_h, neg_h, conf_mat_h, accuracy_h, f1h = Adwords.recommend_by_col_app(landing_page_raw_text, 'Headline')
-        post_d, neg_d, conf_mat_d, accuracy_d, f1d = Adwords.recommend_by_col_app(landing_page_raw_text, 'Description')
+        post_h, neg_h, conf_mat_h, accuracy_h, auc_h = Adwords.recommend_by_col_app(landing_page_raw_text, 'Headline')
+        post_d, neg_d, conf_mat_d, accuracy_d, auc_d = Adwords.recommend_by_col_app(landing_page_raw_text, 'Description')
 
         records_h = post_h.to_dict('records')
         records_d = post_d.to_dict('records')
@@ -33,13 +33,12 @@ def index():
         return render_template('index.html', title='AdWords',
                                form=form,
                                landing_content=landing_page_raw_text,
-                               conf_mat_h=conf_mat_h, accuracy_h=accuracy_h, f1_h=f1h,
-                               conf_mat_d=conf_mat_d, accuracy_d=accuracy_d, f1_d=f1d,
+                               conf_mat_h=conf_mat_h, accuracy_h=accuracy_h, auc_h=auc_h,
+                               conf_mat_d=conf_mat_d, accuracy_d=accuracy_d, auc_d=auc_d,
                                recordsh=records_h, recordsd=records_d, colnames=column_names)
 
     # for get or submit not validate
     return render_template('index.html', title='Google Ads Adviser', form=form)  # GET or submit validate Field
-
 
 @app.route('/api/r', methods=['GET'])
 def recommend():
@@ -57,8 +56,8 @@ def recommend():
         )
         return response
 
-    post_headline, neg_headline, conf_mat_h, accuracy_h, f1_h = Adwords.recommend_by_col_api(landing_page_raw_text, 'Headline')
-    post_description, neg_description, conf_mat_d, accuracy_d, f1_d = Adwords.recommend_by_col_api(landing_page_raw_text, 'Description')
+    post_headline, neg_headline, conf_mat_h, accuracy_h, auc_h = Adwords.recommend_by_col_api(landing_page_raw_text, 'Headline')
+    post_description, neg_description, conf_mat_d, accuracy_d, auc_d = Adwords.recommend_by_col_api(landing_page_raw_text, 'Description')
     if len(landing_page_raw_text) > 1200:
         landing_page_raw_text = landing_page_raw_text[:48] + \
                                 ' ... ' + landing_page_raw_text[200:1200] + '...'

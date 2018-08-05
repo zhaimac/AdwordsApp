@@ -3,7 +3,7 @@
 {% block content %}
 
     <section class="jumbotron text-center mb-0"
-             style="background: url({{ url_for('static', filename='images/bg2.jpg') }}) center no-repeat;">
+             style="background: url({{ url_for('static', filename='images/bg3.jpg') }}) center no-repeat;">
       <div class="container">
         <h2>Google Ad. ML Advisory</h2>
         <form action="" method="post" >
@@ -40,7 +40,7 @@
     Real Time Test Set Metrics:<br>
     Confusion Matrix = {{conf_mat_h}}<br>
     Accuracy = {{accuracy_h}}<br>
-    F1 Score = {{ f1_h }}
+    AUC = {{ auc_h }}
 </p>
 <table border="1" class="text-center">
     <thead>
@@ -68,7 +68,7 @@
     Real Time Test Set Metrics:<br>
     Confusion Matrix = {{conf_mat_d}}<br>
     Accuracy = {{accuracy_d}}<br>
-    F1 Score = {{ f1_d }}
+    AUC = {{ auc_d }}
 </p>
 <table border="1" class="text-center">
     <thead>
