@@ -132,9 +132,9 @@ def sigmoid(x):
 
 def recommend_by_col(landing_page_raw_text, col):
     good_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Good'],
-                                        landing_page_raw_text, col, 0.75)
+                                        landing_page_raw_text, col, 0.65)
     bad_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Bad'],
-                                       landing_page_raw_text, col, 0.75)
+                                       landing_page_raw_text, col, 0.65)
     all_df = good_df.append(bad_df)
 
     # get all dicts
@@ -167,8 +167,8 @@ def recommend_by_col_app(landing_page_raw_text, col, top=48):
     bad.reset_index(level=0, inplace=True)
     bad_sorted = bad.sort_values(by=['Composite Score'], ascending=True)
 
-    # good_sorted.to_csv('./results/good_' + col + '.csv')
-    # bad_sorted.to_csv('./results/bad_' + col + '.csv')
+    good_sorted.to_csv('./results/good_' + col + '.csv')
+    bad_sorted.to_csv('./results/bad_' + col + '.csv')
 
     return good_sorted[:top], bad_sorted[:top], conf_mat.tolist(), accuracy, auc_score
 

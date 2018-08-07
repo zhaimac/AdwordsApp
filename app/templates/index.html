@@ -3,7 +3,7 @@
 {% block content %}
 
     <section class="jumbotron text-center mb-0"
-             style="background: url({{ url_for('static', filename='images/bg3.jpg') }}) center no-repeat;">
+             style="background: url({{ url_for('static', filename='images/bg2.jpg') }}) center no-repeat;">
       <div class="container">
         <h2>Google Ad. ML Advisory</h2>
         <form action="" method="post" >
@@ -42,7 +42,9 @@
     Accuracy = {{accuracy_h}}<br>
     AUC = {{ auc_h }}
 </p>
-<table border="1" class="text-center">
+
+<div class="rst-table-out wrapper">
+<table border="1" class="rst-table inner text-center">
     <thead>
         <tr>
             {% for col in colnames %}
@@ -60,6 +62,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <br><br>
           <h4 class="font-italic text-center">Description - ML Algorithms Recommend</h4>
@@ -70,7 +73,8 @@
     Accuracy = {{accuracy_d}}<br>
     AUC = {{ auc_d }}
 </p>
-<table border="1" class="text-center">
+<div class="rst-table-out wrapper">
+<table border="1" class="rst-table inner text-center">
     <thead>
         <tr>
             {% for col in colnames %}
@@ -88,6 +92,8 @@
         {% endfor %}
     </tbody>
 </table>
+
+
         </div>
       </div>
     {% endif %}
