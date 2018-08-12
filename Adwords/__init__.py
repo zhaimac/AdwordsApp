@@ -132,9 +132,9 @@ def sigmoid(x):
 
 def recommend_by_col(landing_page_raw_text, col):
     good_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Good'],
-                                        landing_page_raw_text, col, 0.65)
+                                        landing_page_raw_text, col, 0.75)
     bad_df = similarity.related_sub_df(cleaned_data_df[cleaned_data_df.label == 'Bad'],
-                                       landing_page_raw_text, col, 0.65)
+                                       landing_page_raw_text, col, 0.75)
     all_df = good_df.append(bad_df)
 
     # get all dicts
@@ -142,17 +142,17 @@ def recommend_by_col(landing_page_raw_text, col):
     ranked_frq_terms_in_bad = ranked_frq_words(bad_df, col)
     post_terms, neg_terms, importance, conf_mat, accuracy, auc_score = recommend_post_neg_conf(all_df, col)
 
-    # ['', 'Adjacency', 'Polarity', 'Importance', 'Composite Score']
+    # ['', 'Ranking', 'Polarity', 'Importance', 'Composite Score']
 
-    good = pd.DataFrame({'Adjacency': pd.Series(ranked_frq_terms_in_good),
+    good = pd.DataFrame({'Ranking': pd.Series(ranked_frq_terms_in_good),
                          'Polarity': pd.Series(post_terms),
                          'Importance': pd.Series(importance)}).dropna()
-    bad = pd.DataFrame({'Adjacency': pd.Series(ranked_frq_terms_in_bad),
+    bad = pd.DataFrame({'Ranking': pd.Series(ranked_frq_terms_in_bad),
                         'Polarity': pd.Series(neg_terms),
                         'Importance': pd.Series(importance)}).dropna()
 
-    good['Composite Score'] = sigmoid(good['Adjacency'] * good['Adjacency'] * good['Polarity'] * good['Importance'])
-    bad['Composite Score'] = sigmoid(bad['Adjacency'] * bad['Adjacency'] * bad['Polarity'] * bad['Importance'])
+    good['Composite Score'] = sigmoid(good['Ranking'] * good['Polarity'] * good['Importance'])
+    bad['Composite Score'] = sigmoid(bad['Ranking'] * bad['Polarity'] * bad['Importance'])
     return good, bad, conf_mat, accuracy, auc_score
 
 
@@ -167,8 +167,8 @@ def recommend_by_col_app(landing_page_raw_text, col, top=48):
     bad.reset_index(level=0, inplace=True)
     bad_sorted = bad.sort_values(by=['Composite Score'], ascending=True)
 
-    good_sorted.to_csv('./results/good_' + col + '.csv')
-    bad_sorted.to_csv('./results/bad_' + col + '.csv')
+    #good_sorted.to_csv('./results/good_' + col + '.csv')
+    #bad_sorted.to_csv('./results/bad_' + col + '.csv')
 
     return good_sorted[:top], bad_sorted[:top], conf_mat.tolist(), accuracy, auc_score
 
